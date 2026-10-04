@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Licitador</title>
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">Licitador <span class="sub">Mercado Público</span></div>
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="oportunidades">Oportunidades</button>
+    <button class="tab" data-tab="buscar">Buscar licitaciones</button>
+    <button class="tab" data-tab="datos">Datos</button>
+  </nav>
+</header>
+<div id="banner" class="banner" hidden></div>
+
+<main>
+  <!-- OPORTUNIDADES -->
+  <section id="tab-oportunidades" class="panel active">
+    <div class="filters">
+      <label>Nivel
+        <select id="op-nivel"><option value="rubro">Rubro (segmento)</option><option value="familia">Familia (más detalle)</option></select>
+      </label>
+      <label>Región <select id="op-region"><option value="">Todas</option></select></label>
+      <label>Período
+        <select id="op-dias"><option value="">Todo</option><option value="30">30 días</option><option value="90">90 días</option><option value="180">180 días</option><option value="365">1 año</option></select>
+      </label>
+      <label>Monto máx. (CLP) <input id="op-monto" type="number" min="0" step="1000000" placeholder="sin límite"></label>
+      <button id="op-pesos-btn" class="ghost" type="button">Ajustar criterios</button>
+    </div>
+    <div id="op-pesos" class="pesos" hidden></div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>Rubros más factibles</h2>
+        <p class="hint">Puntaje 0-100 que combina competencia, concentración, demanda y montos del histórico. Haz clic en un rubro para ver el detalle.</p>
+        <div class="table-wrap"><table id="op-tabla" class="tbl"></table></div>
+      </div>
+      <div class="card scatter-card">
+        <h2>Competencia vs. demanda</h2>
+        <p class="hint">Arriba a la izquierda: muchas licitaciones y pocos oferentes. El tamaño del punto es el monto promedio adjudicado.</p>
+        <div id="op-scatter" class="scatter"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Licitaciones abiertas con mejor perspectiva</h2>
+      <p class="hint">Publicadas y aún sin cerrar, ordenadas por el puntaje de su rubro, ajustado según cuántas ofertas suele recibir el organismo comprador.</p>
+      <div class="table-wrap"><table id="op-abiertas" class="tbl"></table></div>
+    </div>
+  </section>
+
+  <!-- BUSCAR -->
+  <section id="tab-buscar" class="panel">
+    <form id="f-buscar" class="filters">
+      <label class="grow">Texto <input name="texto" placeholder="Producto, nombre, código u organismo"></label>
+      <label>Estado <select name="estado"><option value="">Todos</option></select></label>
+      <label>Región <select name="region"><option value="">Todas</option></select></label>
+      <label>Rubro <select name="rubro"><option value="">Todos</option></select></label>
+      <label>Tipo <select name="tipo"><option value="">Todos</option></select></label>
+      <label>Monto mín. <input name="monto_min" type="number" min="0"></label>
+      <label>Monto máx. <input name="monto_max" type="number" min="0"></label>
+      <label>Orden
+        <select name="orden"><option value="cierre">Cierre más próximo</option><option value="publicacion">Más recientes</option><option value="monto">Mayor monto</option></select>
+      </label>
+      <label class="check"><input type="checkbox" name="abiertas" value="true"> Solo abiertas</label>
+      <button type="submit">Buscar</button>
+    </form>
+    <div class="card">
+      <div id="b-total" class="hint"></div>
+      <div class="table-wrap"><table id="b-tabla" class="tbl"></table></div>
+      <div id="b-pag" class="pag"></div>
+    </div>
+  </section>
+
+  <!-- DATOS -->
+  <section id="tab-datos" class="panel">
+    <div class="card">
+      <h2>Base de datos local</h2>
+      <div id="d-estado" class="stats"></div>
+    </div>
+    <div class="card">
+      <h2>Sincronizar con Mercado Público</h2>
+      <p class="hint">Necesitas un ticket de la API (gratis en <a href="https://api.mercadopublico.cl" target="_blank" rel="noopener">api.mercadopublico.cl</a>) en la variable de entorno <code>MP_TICKET</code>. Cada licitación requiere una consulta para su detalle, así que el histórico tarda: unas 1.000 licitaciones por cada 10 minutos.</p>
+      <div class="filters">
+        <button data-sync="activas">Licitaciones activas</button>
+        <label>Días de histórico <input id="d-dias" type="number" value="30" min="1" max="365"></label>
+        <button data-sync="historico">Histórico adjudicado</button>
+        <label>Máx. detalles <input id="d-max" type="number" min="1" placeholder="todos"></label>
+        <button data-sync="detalles" class="ghost">Completar detalles pendientes</button>
+      </div>
+      <pre id="d-log" class="log"></pre>
+    </div>
+  </section>
+</main>
+
+<dialog id="modal"><div id="modal-body"></div><button class="close" onclick="this.closest('dialog').close()" aria-label="Cerrar">×</button></dialog>
+<div id="tooltip" class="tooltip" hidden></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
